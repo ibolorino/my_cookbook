@@ -1,0 +1,8 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_IMAGE_URL}:latest']
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', 'gs://${_BUCKET_NAME}/${_CREDENTIALS_NAME}', 'credentials.json']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${_IMAGE_URL}:${_IMAGE_TAG}', '--build-arg', 'VERSION=${_VERSION}', '.']
+images: ['${_IMAGE_URL}:${_IMAGE_TAG}']
