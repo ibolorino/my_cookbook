@@ -31,7 +31,7 @@ def update_recipe_item(*, db: Session = Depends(get_db), id: int, recipe_item_in
         raise HTTPException(status_code=404, detail="Recipe not found")
     if not crud.user.is_superuser(current_user):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    recipe_item = crud.recipe.update(db=db, db_obj=recipe_item, obj_in=recipe_item_in)
+    recipe_item = crud.recipe_item.update(db=db, db_obj=recipe_item, obj_in=recipe_item_in)
     return recipe_item
 
 @router.delete("/{id}", response_model=schemas.RecipeItem)
