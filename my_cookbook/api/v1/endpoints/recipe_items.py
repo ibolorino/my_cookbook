@@ -1,0 +1,45 @@
+from typing import Any, List
+from fastapi import APIRouter, Depends, HTTPException
+from my_cookbook import schemas, crud, models
+from my_cookbook.api.dependencies import get_db, get_current_active_user
+from sqlalchemy.orm import Session
+from my_cookbook.config import get_settings
+
+settings = get_settings()
+
+
+router = APIRouter(prefix="/recipe_item")
+
+@router.get("/", response_model=List[schemas.RecipeItem])
+def read_recipe_items(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100
+) -> Any:
+    recipe_items = crud.recipe_item.get_multi(db, skip=skip, limit=limit)
+    return recipe_items
+
+@router.post("/", response_model=schemas.RecipeItem)
+def create_recipe_item(recipe_item_in: schemas.RecipeItemCreate, db: Session = Depends(get_db)) -> Any:
+    recipe_item = crud.recipe_item.create(db, obj_in=recipe_item_in,)
+    return recipe_item
+
+@router.put("/{id}", response_model=schemas.RecipeItem)
+def update_recipe_item(*, db: Session = Depends(get_db), id: int, recipe_item_in: schemas.RecipeItemUpdate, current_user: models.User = Depends(get_current_active_user)) -> Any:
+    recipe_item = crud.recipe_item.get(db=db, id=id)
+    if not recipe_item:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    recipe_item = crud.recipe.update(db=db, db_obj=recipe_item, obj_in=recipe_item_in)
+    return recipe_item
+
+@router.delete("/{id}", response_model=schemas.RecipeItem)
+def delete_recipe_item(*, db: Session = Depends(get_db), id: int, current_user: models.User = Depends(get_current_active_user)) -> Any:
+    recipe_item = crud.recipe_item.get(db=db, id=id)
+    if not recipe_item:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    recipe_item = crud.recipe_item.remove(db=db, id=id)
+    return recipe_item
