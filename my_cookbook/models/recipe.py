@@ -11,7 +11,6 @@ class Recipe(Base):
     owner_id = Column(Integer, ForeignKey("user.id"))
     owner = relationship("User", back_populates="recipes")
     items = relationship("RecipeItem", back_populates="recipe")
-    steps = relationship("Step", back_populates="recipe")
 
 
 class RecipeItem(Base):
@@ -20,13 +19,14 @@ class RecipeItem(Base):
     recipe_id = Column(Integer, ForeignKey("recipe.id"))
     recipe = relationship("Recipe", back_populates="items")
     ingredients = relationship("Ingredient", back_populates="recipe_item")
+    steps = relationship("Step", back_populates="recipe_item")
 
 
 class Step(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    recipe_id = Column(Integer, ForeignKey("recipe.id"))
-    recipe = relationship("Recipe", back_populates="steps")
+    recipe_item_id = Column(Integer, ForeignKey("recipeitem.id"))
+    recipe_item = relationship("RecipeItem", back_populates="steps")
     order = Column(Integer)
     description = Column(String)
 

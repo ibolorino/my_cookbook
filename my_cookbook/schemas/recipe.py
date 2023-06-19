@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from .recipe_item import RecipeItem
 
 
 class RecipeBase(BaseModel):
@@ -27,7 +28,7 @@ class RecipeInDBBase(RecipeBase):
 
 
 class Recipe(RecipeInDBBase):
-    pass
+    items: List[RecipeItem]
 
 
 class RecipeInDB(RecipeInDBBase):
