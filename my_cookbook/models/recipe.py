@@ -19,6 +19,7 @@ class RecipeItem(Base):
     name = Column(String)
     recipe_id = Column(Integer, ForeignKey("recipe.id"))
     recipe = relationship("Recipe", back_populates="items")
+    ingredients = relationship("Ingredient", back_populates="recipe_item")
 
 
 class Step(Base):
@@ -28,3 +29,11 @@ class Step(Base):
     recipe = relationship("Recipe", back_populates="steps")
     order = Column(Integer)
     description = Column(String)
+
+
+class Ingredient(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    quantity = Column(String)
+    recipe_item_id = Column(Integer, ForeignKey("recipeitem.id"))
+    recipe_item = relationship("RecipeItem", back_populates="ingredients")
