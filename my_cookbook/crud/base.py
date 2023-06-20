@@ -1,9 +1,12 @@
 from typing import Generic, Type, TypeVar, Optional, List, Any, Union, Dict
 from pydantic import BaseModel
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 
 from my_cookbook.db.base_class import Base
 from sqlalchemy.orm import Session
+
+from sqlalchemy.exc import IntegrityError
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -26,10 +29,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if owner_id:
             obj_in_data.update({"owner_id": owner_id})
         db_obj = self.model(**obj_in_data)
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        try:
+            db.add(db_obj)
+            db.commit()
+            db.refresh(db_obj)
+            return db_obj
+        except IntegrityError as ie:
+            message = ie.orig.diag.message_detail.replace('"', "'")
+            if message:
+                raise HTTPException(status_code=400, detail=message)
+            raise ie
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"{e.__class__.__name__}: {str(e)}")
     
     def update(self, db: Session, *, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
@@ -40,10 +51,18 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for field in obj_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        try:
+            db.add(db_obj)
+            db.commit()
+            db.refresh(db_obj)
+            return db_obj
+        except IntegrityError as ie:
+            message = ie.orig.diag.message_detail.replace('"', "'")
+            if message:
+                raise HTTPException(status_code=400, detail=message)
+            raise ie
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"{e.__class__.__name__}: {str(e)}")
     
     def remove(self, db: Session, *, id: int) -> ModelType:
         obj = db.query(self.model).get(id)
