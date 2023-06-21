@@ -41,5 +41,5 @@ def delete_recipe(*, db: Session = Depends(get_db), id: int, current_user: model
         raise HTTPException(status_code=404, detail="Recipe not found")
     if not crud.user.is_superuser(current_user) and (recipe.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    recipe = crud.recipe.remove(db=db, id=id)
+    recipe = crud.recipe.remove(db=db, db_obj=recipe)
     return recipe
