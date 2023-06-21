@@ -64,8 +64,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"{e.__class__.__name__}: {str(e)}")
     
-    def remove(self, db: Session, *, id: int) -> ModelType:
-        obj = db.query(self.model).get(id)
-        db.delete(obj)
+    def remove(self, db: Session, *, db_obj: ModelType) -> ModelType:
+        db.delete(db_obj)
         db.commit()
-        return(obj)
+        return(db_obj)

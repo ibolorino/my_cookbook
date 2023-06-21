@@ -14,12 +14,13 @@ ADD my_cookbook/ $DEPLOY_PATH/my_cookbook
 ADD wsgi.py $DEPLOY_PATH/wsgi.py
 ADD setup.cfg $DEPLOY_PATH/setup.cfg
 ADD requirements.txt $DEPLOY_PATH/requirements.txt
+ADD requirements-dev.txt $DEPLOY_PATH/requirements-dev.txt
 
 WORKDIR $DEPLOY_PATH
 
 RUN pip install --upgrade pip
 RUN pip install -U setuptools wheel
-RUN pip install -r requirements.txt
+RUN pip install -r requirements-dev.txt
 
 EXPOSE 8000
 

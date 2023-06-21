@@ -22,7 +22,6 @@ def read_recipe_items(
 @router.post("/", response_model=schemas.RecipeItem)
 def create_recipe_item(recipe_item_in: schemas.RecipeItemCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_user)) -> Any:
     recipe = crud.recipe.get(db=db, id=recipe_item_in.recipe_id)
-
     if recipe: # só permite a criação se o current_user for o dono do Recipe
         if recipe.owner_id != current_user.id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
@@ -34,9 +33,10 @@ def create_recipe_item(recipe_item_in: schemas.RecipeItemCreate, db: Session = D
 def update_recipe_item(*, db: Session = Depends(get_db), id: int, recipe_item_in: schemas.RecipeItemUpdate, current_user: models.User = Depends(get_current_active_user)) -> Any:
     recipe_item = crud.recipe_item.get(db=db, id=id)
     if not recipe_item:
-        raise HTTPException(status_code=404, detail="Recipe not found")
-    if not crud.user.is_superuser(current_user) and (recipe_item.recipe.owner_id != current_user.id):
+        raise HTTPException(status_code=404, detail="Recipe item not found")
+    if not crud.user.is_superuser(current_user) and recipe_item.recipe.owner_id != current_user.id:
         raise HTTPException(status_code=400, detail="Not enough permissions")
+    
     recipe_item = crud.recipe_item.update(db=db, db_obj=recipe_item, obj_in=recipe_item_in)
     return recipe_item
 
@@ -47,5 +47,5 @@ def delete_recipe_item(*, db: Session = Depends(get_db), id: int, current_user: 
         raise HTTPException(status_code=404, detail="Recipe not found")
     if not crud.user.is_superuser(current_user) and (recipe_item.recipe.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    recipe_item = crud.recipe_item.remove(db=db, id=id)
+    recipe_item = crud.recipe_item.remove(db=db, db_obj=recipe_item)
     return recipe_item
