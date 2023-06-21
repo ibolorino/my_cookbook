@@ -20,7 +20,11 @@ def read_ingredients(
     return ingredients
 
 @router.post("/", response_model=schemas.Ingredient)
-def create_ingredient(ingredient_in: schemas.IngredientCreate, db: Session = Depends(get_db)) -> Any:
+def create_ingredient(ingredient_in: schemas.IngredientCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_user)) -> Any:
+    recipe_item = crud.recipe_item.get(db=db, id=ingredient_in.recipe_item_id)
+    if recipe_item: # só permite a criação se o current_user for o dono do Recipe
+        if recipe_item.recipe.owner_id != current_user.id:
+            raise HTTPException(status_code=400, detail="Not enough permissions")
     ingredient = crud.ingredient.create(db, obj_in=ingredient_in,)
     return ingredient
 
@@ -29,7 +33,7 @@ def update_ingredient(*, db: Session = Depends(get_db), id: int, ingredient_in: 
     ingredient = crud.ingredient.get(db=db, id=id)
     if not ingredient:
         raise HTTPException(status_code=404, detail="Ingredient not found")
-    if not crud.user.is_superuser(current_user):
+    if not crud.user.is_superuser(current_user) and ingredient.recipe_item.recipe.owner_id != current_user.id:
         raise HTTPException(status_code=400, detail="Not enough permissions")
     ingredient = crud.ingredient.update(db=db, db_obj=ingredient, obj_in=ingredient_in)
     return ingredient
@@ -39,7 +43,7 @@ def delete_ingredient(*, db: Session = Depends(get_db), id: int, current_user: m
     ingredient = crud.ingredient.get(db=db, id=id)
     if not ingredient:
         raise HTTPException(status_code=404, detail="Ingredient not found")
-    if not crud.user.is_superuser(current_user):
+    if not crud.user.is_superuser(current_user) and ingredient.recipe_item.recipe.owner_id != current_user.id:
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    ingredient = crud.ingredient.remove(db=db, id=id)
+    ingredient = crud.ingredient.remove(db=db, db_obj=ingredient)
     return ingredient

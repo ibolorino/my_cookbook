@@ -1,2 +1,2 @@
 from .user import User
-from .recipe import Recipe, RecipeItem
+from .recipe import Recipe, RecipeItem, Ingredient
