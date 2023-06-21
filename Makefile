@@ -14,4 +14,4 @@ runserver:
 	docker compose up
 
 test:
-	docker compose run --rm backend python -m unittest -v
+	docker compose run --rm backend python -m unittest discover -v -s tests/$(DIR)
