@@ -43,7 +43,7 @@ class TestCreateIngredient(TestIngredientBase):
         self.assertTrue(response.name == ingredient_in.name)
     
     @patch("my_cookbook.crud.recipe_item.get")
-    def test_success_permission_denied(self, recipe_item_mock):
+    def test_permission_denied(self, recipe_item_mock):
         user_id = 1
         current_user = MagicMock(spec=models.User, id=user_id, is_superuser=False)
         ingredient_in = schemas.IngredientCreate(name="batata", quantity="500g", recipe_item_id=1)
@@ -102,11 +102,11 @@ class TestDeleteIngredient(TestIngredientBase):
         self.assertTrue(response.name == ingredient_mock.return_value.name)
     
     @patch("my_cookbook.crud.ingredient.get")
-    def test_success_owner_id(self, ingredient_mock):
+    def test_success_superuser(self, ingredient_mock):
         ingredient_id = 1
         user_id = 1
-        current_user = MagicMock(spec=models.User, id=user_id, is_superuser=False)
-        recipe_item = MagicMock(recipe=MagicMock(owner_id=user_id))
+        current_user = MagicMock(spec=models.User, id=user_id, is_superuser=True)
+        recipe_item = MagicMock(recipe=MagicMock(owner_id=user_id+1))
         ingredient_mock.return_value = models.Ingredient(id=1, name="batata", quantity="500g", recipe_item=recipe_item)
         response = delete_ingredient(db=self.db, id=ingredient_id, current_user=current_user)
         self.assertTrue(response.name == ingredient_mock.return_value.name)

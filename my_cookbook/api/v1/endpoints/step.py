@@ -20,7 +20,11 @@ def read_steps(
     return steps
 
 @router.post("/", response_model=schemas.Step)
-def create_step(step_in: schemas.StepCreate, db: Session = Depends(get_db)) -> Any:
+def create_step(step_in: schemas.StepCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_user)) -> Any:
+    recipe_item = crud.recipe_item.get(db=db, id=step_in.recipe_item_id)
+    if recipe_item: # só permite a criação se o current_user for o dono do Recipe
+        if recipe_item.recipe.owner_id != current_user.id:
+            raise HTTPException(status_code=400, detail="Not enough permissions")
     step = crud.step.create(db, obj_in=step_in,)
     return step
 
@@ -29,7 +33,7 @@ def update_step(*, db: Session = Depends(get_db), id: int, step_in: schemas.Step
     step = crud.step.get(db=db, id=id)
     if not step:
         raise HTTPException(status_code=404, detail="Step not found")
-    if not crud.user.is_superuser(current_user):
+    if not crud.user.is_superuser(current_user) and step.recipe_item.recipe.owner_id != current_user.id:
         raise HTTPException(status_code=400, detail="Not enough permissions")
     step = crud.step.update(db=db, db_obj=step, obj_in=step_in)
     return step
@@ -39,7 +43,7 @@ def delete_step(*, db: Session = Depends(get_db), id: int, current_user: models.
     step = crud.step.get(db=db, id=id)
     if not step:
         raise HTTPException(status_code=404, detail="Step not found")
-    if not crud.user.is_superuser(current_user):
+    if not crud.user.is_superuser(current_user) and step.recipe_item.recipe.owner_id != current_user.id:
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    step = crud.step.remove(db=db, id=id)
+    step = crud.step.remove(db=db, db_obj=step)
     return step
