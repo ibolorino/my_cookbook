@@ -8,6 +8,7 @@ from my_cookbook.api.v1.endpoints.recipe_items import (
     create_recipe_item, 
     update_recipe_item,
     delete_recipe_item,
+    update_recipe_item_steps,
 )
 
 
@@ -83,6 +84,25 @@ class TestUpdateRecipeItem(TestRecipeItemBase):
         recipe_item_mock.return_value = models.RecipeItem(id=1, name="batata2222", steps=[], ingredients=[], recipe=MagicMock(owner_id=user_id+1))
         with self.assertRaises(HTTPException):
             update_recipe_item(db=self.db, id=1, recipe_item_in=recipe_item_in, current_user=current_user)
+
+
+class TestUpdateRecipeItemSteps(TestRecipeItemBase):
+    @patch("my_cookbook.crud.recipe_item.get")
+    def test_success(self, recipe_item_mock):
+        user_id = 1
+        current_user = MagicMock(spec=models.User, id=user_id, is_superuser=False)
+        steps = [
+            models.Step(name="batata", description="batata", id=1, order=1),
+            models.Step(name="batata2", description="batata2", id=2, order=2)
+        ]
+        steps_in = [
+            schemas.StepOrderUpdate(id=1, order=3),
+            schemas.StepOrderUpdate(id=5, order=5)
+        ]
+        recipe_item_mock.return_value = models.RecipeItem(id=1, name="batata", steps=steps, ingredients=[], recipe=MagicMock(owner_id=user_id))
+        response = update_recipe_item_steps(db=self.db, id=1, steps_in=steps_in, current_user=current_user)
+        # print("#######################")
+        # print([step.__dict__ for step in response.steps])
 
 
 class TestDeleteRecipeItem(TestRecipeItemBase):

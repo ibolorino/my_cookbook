@@ -16,13 +16,17 @@ from my_cookbook.schemas.recipe_item import (
 from my_cookbook.schemas.step import (
     StepCreate,
     StepUpdate,
+    StepOrderUpdate,
 )
 from my_cookbook.schemas.ingredient import (
     IngredientCreate,
     IngredientUpdate,
 )
+from sqlalchemy import update
 from sqlalchemy.orm import Session
-from typing import Any
+from sqlalchemy.orm.exc import StaleDataError
+from fastapi import HTTPException
+from typing import Any, List
 
 
 class CRUDRecipe(CRUDBase[Recipe, RecipeCreate, RecipeUpdate]):
@@ -30,11 +34,17 @@ class CRUDRecipe(CRUDBase[Recipe, RecipeCreate, RecipeUpdate]):
 
 
 class CRUDRecipeItem(CRUDBase[RecipeItem, RecipeItemCreate, RecipeItemUpdate]):
-    pass
+    def update_steps(self, db: Session, *, recipe_item: RecipeItem, steps: List[StepOrderUpdate]) -> RecipeItem:
+        db.execute(update(Step), steps)
+        db.commit()
+        db.refresh(recipe_item)
+        return recipe_item
+        
 
 
 class CRUDStep(CRUDBase[Step, StepCreate, StepUpdate]):
-    pass
+    def get_multi(self, db: Session) -> List[Step]:
+        return db.query(Step).order_by("order").all()
 
 
 class CRUDIngredient(CRUDBase[Ingredient, IngredientCreate, IngredientUpdate]):

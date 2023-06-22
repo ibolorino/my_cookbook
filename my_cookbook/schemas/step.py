@@ -19,6 +19,11 @@ class StepUpdate(StepBase):
     description: Optional[str]
 
 
+class StepOrderUpdate(BaseModel):
+    id: Optional[int]
+    order: Optional[int]
+
+
 class StepInDBBase(StepBase):
     id: Optional[int] = None
 

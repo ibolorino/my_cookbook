@@ -27,6 +27,12 @@ class RecipeItem(RecipeItemInDBBase):
     steps: List[Step]
     ingredients: List[Ingredient]
 
+    def dict(self, **data):
+        data = super().dict(**data)
+        if "steps" in data and len(data["steps"]) > 1:
+            data["steps"] = sorted(data["steps"], key=lambda step: step["order"])
+        return data
+
 
 class RecipeItemInDB(RecipeItemInDBBase):
     pass

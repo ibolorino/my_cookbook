@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from my_cookbook import schemas, crud, models
 from my_cookbook.api.dependencies import get_db, get_current_active_user
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import StaleDataError
 from my_cookbook.config import get_settings
 
 settings = get_settings()
@@ -48,4 +49,16 @@ def delete_recipe_item(*, db: Session = Depends(get_db), id: int, current_user: 
     if not crud.user.is_superuser(current_user) and (recipe_item.recipe.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
     recipe_item = crud.recipe_item.remove(db=db, db_obj=recipe_item)
+    return recipe_item
+
+@router.put("/{id}/steps", response_model=schemas.RecipeItem)
+def update_recipe_item_steps(*, db: Session = Depends(get_db), id: int, steps_in: List[schemas.StepOrderUpdate], current_user: models.User = Depends(get_current_active_user)) -> Any:
+    recipe_item = crud.recipe_item.get(db=db, id=id)
+    if not recipe_item:
+        raise HTTPException(status_code=404, detail="Recipe item not found")
+    if recipe_item.recipe.owner_id != current_user.id:
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    recipe_item_steps = [step.id for step in recipe_item.steps]
+    steps_in = [step.dict(exclude_unset=True) for step in steps_in if step.id in recipe_item_steps]
+    recipe_item = crud.recipe_item.update_steps(db=db, recipe_item=recipe_item, steps=steps_in)
     return recipe_item
