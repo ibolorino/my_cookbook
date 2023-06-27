@@ -27,4 +27,4 @@ jobs:
 #           pip install -r requirements.txt
 
       - name: Testing
-        run: docker compose run --rm backend python -m unittest discover
+        run: docker compose run backend python -m unittest discover
