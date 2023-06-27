@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from functools import lru_cache
 
 from pydantic import BaseSettings, validator, PostgresDsn
@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_HOST: str
     DATABASE_URI: Optional[PostgresDsn] = None
+    BACKEND_CORS_ORIGINS: List[str] = ["*"]
 
     LOG_LEVEL: str = 'INFO'
 

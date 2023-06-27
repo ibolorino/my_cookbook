@@ -1,5 +1,6 @@
 import logging
 import logging.config
+from starlette.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI
 
@@ -11,7 +12,18 @@ conf = get_settings()
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title=conf.SERVICE_NAME, debug=conf.DEBUG, version=conf.VERSION)
+    app = FastAPI(title=conf.SERVICE_NAME, debug=conf.DEBUG, version=conf.VERSION, openapi_url="/openapi.json")
+
+    if conf.BACKEND_CORS_ORIGINS:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=[str(origin) for origin in conf.BACKEND_CORS_ORIGINS],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+
+
     app = configure_routes(app=app)
 
     logging.config.dictConfig(conf.LOGGING)

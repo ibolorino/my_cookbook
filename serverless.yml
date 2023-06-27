@@ -1,0 +1,31 @@
+service: my-cookbok
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  profile: ${opt:aws-profile, "default"}
+  region: sa-east-1
+  stage: ${opt:stage, "dev"}
+  runtime: python3.9
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer:
+      name: FastAPI-Lambda-Function
+      description: FastAPI-Lambda-Function API Layer
+      compatibleRuntimes:
+        - python3.9
+
+functions:
+  app:
+    handler: wsgi.handler
+    environment:
+      STAGE: ${self:provider.stage}
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+

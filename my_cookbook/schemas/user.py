@@ -4,8 +4,6 @@ from typing import Optional
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
-    is_active: Optional[bool] = True
-    is_superuser: bool = False
     full_name: Optional[str] = None
     
 
@@ -27,7 +25,8 @@ class UserInDBBase(UserBase):
 
 # Additional properties to return via API
 class User(UserInDBBase):
-    pass
+    is_active: bool = True
+    is_superuser: bool = False
 
 
 # Additional properties stored in DB
