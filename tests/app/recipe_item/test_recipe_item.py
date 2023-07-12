@@ -10,7 +10,7 @@ from my_cookbook.api.v1.endpoints.recipe_items import (
     delete_recipe_item,
     read_recipe_items,
     update_recipe_item,
-    update_recipe_item_steps,
+    update_recipe_item_steps
 )
 
 
