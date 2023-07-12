@@ -6,7 +6,12 @@ from sqlalchemy.orm import Session
 
 from my_cookbook import crud, models, schemas
 from my_cookbook.api.v1.endpoints.recipe_items import (
-    read_recipe_items, create_recipe_item, delete_recipe_item, update_recipe_item, update_recipe_item_steps)
+    create_recipe_item,
+    delete_recipe_item,
+    read_recipe_items,
+    update_recipe_item,
+    update_recipe_item_steps,
+)
 
 
 class TestRecipeItemBase(unittest.TestCase):
@@ -139,7 +144,8 @@ class TestUpdateRecipeItemSteps(TestRecipeItemBase):
         response = update_recipe_item_steps(
             db=self.db, id=1, steps_in=steps_in, current_user=current_user
         )
-        self.assertTrue(response.name == steps_in.name)
+        for i, step in enumerate(recipe_item_mock.steps):
+            self.assertTrue(step.order != response.steps[i].order)
 
 
 class TestDeleteRecipeItem(TestRecipeItemBase):
