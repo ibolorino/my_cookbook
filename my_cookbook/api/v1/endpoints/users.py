@@ -1,23 +1,23 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException
-from my_cookbook import schemas, crud
-from my_cookbook.api.dependencies import get_db
+
+from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
+
+from my_cookbook import crud, schemas
 from my_cookbook.config import get_settings
+from my_cookbook.api.dependencies import get_db
 
 settings = get_settings()
 
 
 router = APIRouter(prefix="/user")
 
+
 @router.get("/", response_model=List[schemas.User])
-def read_users(
-    db: Session = Depends(get_db),
-    skip: int = 0,
-    limit: int = 100
-) -> Any:
+def read_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 100) -> Any:
     users = crud.user.get_multi(db, skip=skip, limit=limit)
     return users
+
 
 @router.post("/", response_model=schemas.User)
 def create_user(user_in: schemas.UserCreate, db: Session = Depends(get_db)) -> Any:

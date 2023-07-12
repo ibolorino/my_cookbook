@@ -1,12 +1,14 @@
+from typing import List, Optional
+
 from pydantic import BaseModel
-from typing import Optional, List
+
 from .step import Step
 from .ingredient import Ingredient
 
 
 class RecipeItemBase(BaseModel):
     name: str
-    
+
 
 class RecipeItemCreate(RecipeItemBase):
     recipe_id: int

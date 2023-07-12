@@ -1,11 +1,12 @@
-from pydantic import BaseModel, EmailStr
 from typing import Optional
+
+from pydantic import EmailStr, BaseModel
 
 
 class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
-    
+
 
 class UserCreate(UserBase):
     email: EmailStr

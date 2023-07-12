@@ -1,6 +1,7 @@
-from my_cookbook.db.base_class import Base
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Column, String, Boolean, Integer
 from sqlalchemy.orm import relationship
+
+from my_cookbook.db.base_class import Base
 
 
 class User(Base):

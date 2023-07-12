@@ -4,3 +4,4 @@ ipdb==0.13.9
 ipython==7.31.1
 flake8==3.9.2
 isort==5.8.0
+pre-commit==3.3.3

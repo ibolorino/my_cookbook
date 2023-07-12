@@ -1,32 +1,15 @@
-from .base import CRUDBase
-from my_cookbook.models.recipe import (
-    Recipe, 
-    RecipeItem,
-    Step,
-    Ingredient,
-)
-from my_cookbook.schemas.recipe import (
-    RecipeCreate,
-    RecipeUpdate,
-)
-from my_cookbook.schemas.recipe_item import (
-    RecipeItemCreate,
-    RecipeItemUpdate,
-)
-from my_cookbook.schemas.step import (
-    StepCreate,
-    StepUpdate,
-    StepOrderUpdate,
-)
-from my_cookbook.schemas.ingredient import (
-    IngredientCreate,
-    IngredientUpdate,
-)
+from typing import List
+
 from sqlalchemy import update
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.exc import StaleDataError
-from fastapi import HTTPException
-from typing import Any, List
+
+from my_cookbook.schemas.step import StepCreate, StepUpdate, StepOrderUpdate
+from my_cookbook.models.recipe import Step, Recipe, Ingredient, RecipeItem
+from my_cookbook.schemas.recipe import RecipeCreate, RecipeUpdate
+from my_cookbook.schemas.ingredient import IngredientCreate, IngredientUpdate
+from my_cookbook.schemas.recipe_item import RecipeItemCreate, RecipeItemUpdate
+
+from .base import CRUDBase
 
 
 class CRUDRecipe(CRUDBase[Recipe, RecipeCreate, RecipeUpdate]):
@@ -34,12 +17,13 @@ class CRUDRecipe(CRUDBase[Recipe, RecipeCreate, RecipeUpdate]):
 
 
 class CRUDRecipeItem(CRUDBase[RecipeItem, RecipeItemCreate, RecipeItemUpdate]):
-    def update_steps(self, db: Session, *, recipe_item: RecipeItem, steps: List[StepOrderUpdate]) -> RecipeItem:
+    def update_steps(
+        self, db: Session, *, recipe_item: RecipeItem, steps: List[StepOrderUpdate]
+    ) -> RecipeItem:
         db.execute(update(Step), steps)
         db.commit()
         db.refresh(recipe_item)
         return recipe_item
-        
 
 
 class CRUDStep(CRUDBase[Step, StepCreate, StepUpdate]):

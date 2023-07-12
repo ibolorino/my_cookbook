@@ -1,6 +1,7 @@
-from my_cookbook.db.base_class import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+
+from my_cookbook.db.base_class import Base
 
 
 class Recipe(Base):
@@ -21,7 +22,7 @@ class RecipeItem(Base):
     ingredients = relationship("Ingredient", back_populates="recipe_item")
     steps = relationship("Step", back_populates="recipe_item")
 
-    
+
 class Step(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
