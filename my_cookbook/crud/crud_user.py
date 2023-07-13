@@ -1,13 +1,16 @@
-from .base import CRUDBase
-from sqlalchemy.orm import Session
 from typing import Optional
+
+from sqlalchemy.orm import Session
+
+from my_cookbook.api.v1.core.security import get_password_hash, verify_password
 from my_cookbook.models.user import User
 from my_cookbook.schemas.user import UserCreate, UserUpdate
-from my_cookbook.api.v1.core.security import verify_password, get_password_hash
+
+from .base import CRUDBase
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
-    def get_by_email(self, db: Session, *, email:str) -> Optional[User]:
+    def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()
 
     def create(self, db: Session, *, obj_in: UserCreate) -> User:

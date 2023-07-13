@@ -11,7 +11,7 @@ migrate:
 	docker compose run --rm backend alembic upgrade head
 
 runserver:
-	docker compose up
+	docker compose up --build -d
 
 test:
 	docker compose run --rm backend python -m unittest discover -v -s tests/$(DIR)

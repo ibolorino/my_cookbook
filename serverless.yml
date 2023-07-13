@@ -28,4 +28,3 @@ functions:
       STAGE: ${self:provider.stage}
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
-

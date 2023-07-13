@@ -1,14 +1,14 @@
-from typing import Optional, Dict, Any, List
 from functools import lru_cache
+from typing import Any, Dict, List, Optional
 
-from pydantic import BaseSettings, validator, PostgresDsn
+from pydantic import BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    ENVIRONMENT: str = ''
-    SERVICE_NAME: str = 'my_cookbook'
-    VERSION: str = '1.0.0'
+    ENVIRONMENT: str = ""
+    SERVICE_NAME: str = "my_cookbook"
+    VERSION: str = "1.0.0"
     DEBUG: bool = False
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -17,32 +17,28 @@ class Settings(BaseSettings):
     DATABASE_URI: Optional[PostgresDsn] = None
     BACKEND_CORS_ORIGINS: List[str] = ["*"]
 
-    LOG_LEVEL: str = 'INFO'
+    LOG_LEVEL: str = "INFO"
 
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'standard': {
-                'format': '[%(asctime)s][%(levelname)s] %(name)s '
-                '%(filename)s:%(funcName)s:%(lineno)d | %(message)s',
-                'datefmt': '%Y-%m-%d %H:%M:%S'
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "format": "[%(asctime)s][%(levelname)s] %(name)s "
+                "%(filename)s:%(funcName)s:%(lineno)d | %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
             },
         },
-        'handlers': {
-            'default': {
-                'level': LOG_LEVEL,
-                'formatter': 'standard',
-                'class': 'logging.StreamHandler',
-                'stream': 'ext://sys.stdout'
+        "handlers": {
+            "default": {
+                "level": LOG_LEVEL,
+                "formatter": "standard",
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
             },
         },
-        'loggers': {
-            '': {
-                'handlers': ['default'],
-                'level': LOG_LEVEL,
-                'propagate': False
-            },
+        "loggers": {
+            "": {"handlers": ["default"], "level": LOG_LEVEL, "propagate": False},
         },
     }
 
@@ -64,7 +60,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     SECRET_KEY: str = "X*$DqrzZ1Hk%V8CeN%yVhsojXl999JAENuohPsz1Ncx%Qe6sp@"
     JWT_ALGORITHM: str = "HS256"
-
 
     class Config:
         env_file = ".env"

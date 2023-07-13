@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel
 
 
 class StepBase(BaseModel):
@@ -7,7 +8,7 @@ class StepBase(BaseModel):
     recipe_item_id: int
     order: int
     description: str
-    
+
 
 class StepCreate(StepBase):
     pass
