@@ -1,14 +1,14 @@
-from typing import Any
 from datetime import timedelta
+from typing import Any
 
-from fastapi import Depends, APIRouter, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
 from my_cookbook import crud
-from my_cookbook.config import get_settings
-from my_cookbook.api.v1.core import security
 from my_cookbook.api.dependencies import get_db
+from my_cookbook.api.v1.core import security
+from my_cookbook.config import get_settings
 
 settings = get_settings()
 

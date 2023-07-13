@@ -1,9 +1,9 @@
 from typing import Generator
 
-from jose import jwt
 from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from sqlalchemy.orm import Session
 
 from my_cookbook import crud, models, schemas
 from my_cookbook.config import get_settings

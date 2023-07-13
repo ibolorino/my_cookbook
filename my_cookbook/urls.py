@@ -1,6 +1,13 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter, FastAPI
 
-from my_cookbook.api.v1.endpoints import step, login, users, recipes, ingredient, recipe_items
+from my_cookbook.api.v1.endpoints import (
+    ingredient,
+    login,
+    recipe_items,
+    recipes,
+    step,
+    users,
+)
 
 
 def configure_routes(app: FastAPI) -> FastAPI:

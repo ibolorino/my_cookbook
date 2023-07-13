@@ -3,11 +3,11 @@ from typing import List
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 
-from my_cookbook.schemas.step import StepCreate, StepUpdate, StepOrderUpdate
-from my_cookbook.models.recipe import Step, Recipe, Ingredient, RecipeItem
-from my_cookbook.schemas.recipe import RecipeCreate, RecipeUpdate
+from my_cookbook.models.recipe import Ingredient, Recipe, RecipeItem, Step
 from my_cookbook.schemas.ingredient import IngredientCreate, IngredientUpdate
+from my_cookbook.schemas.recipe import RecipeCreate, RecipeUpdate
 from my_cookbook.schemas.recipe_item import RecipeItemCreate, RecipeItemUpdate
+from my_cookbook.schemas.step import StepCreate, StepOrderUpdate, StepUpdate
 
 from .base import CRUDBase
 

@@ -1,10 +1,10 @@
-from typing import Any, Dict, List, Type, Union, Generic, TypeVar, Optional
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from fastapi.encoders import jsonable_encoder
 
 from my_cookbook.db.base_class import Base
 

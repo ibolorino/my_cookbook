@@ -1,11 +1,11 @@
 from typing import Any, List
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from my_cookbook import crud, models, schemas
+from my_cookbook.api.dependencies import get_current_active_user, get_db
 from my_cookbook.config import get_settings
-from my_cookbook.api.dependencies import get_db, get_current_active_user
 
 settings = get_settings()
 

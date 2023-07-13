@@ -1,7 +1,7 @@
-from typing import Any, Dict, List, Optional
 from functools import lru_cache
+from typing import Any, Dict, List, Optional
 
-from pydantic import PostgresDsn, BaseSettings, validator
+from pydantic import BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):

@@ -2,9 +2,9 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
+from my_cookbook.api.v1.core.security import get_password_hash, verify_password
 from my_cookbook.models.user import User
 from my_cookbook.schemas.user import UserCreate, UserUpdate
-from my_cookbook.api.v1.core.security import verify_password, get_password_hash
 
 from .base import CRUDBase
 

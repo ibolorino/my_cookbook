@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from .step import Step
 from .ingredient import Ingredient
+from .step import Step
 
 
 class RecipeItemBase(BaseModel):

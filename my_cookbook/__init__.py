@@ -4,8 +4,8 @@ import logging.config
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from .urls import configure_routes
 from .config import get_settings
+from .urls import configure_routes
 
 logger = logging.getLogger(__name__)
 conf = get_settings()

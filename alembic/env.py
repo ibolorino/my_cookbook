@@ -1,7 +1,7 @@
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import pool, engine_from_config
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from my_cookbook.config import get_settings
