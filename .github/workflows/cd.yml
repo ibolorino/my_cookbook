@@ -19,13 +19,13 @@ jobs:
         with:
           node-version: "20.2"
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
-          cache: pip
-          cache-dependency-path:  |
-            requirements.txt
+      # - name: Set up Python
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: "3.9"
+      #     cache: pip
+      #     cache-dependency-path:  |
+      #       requirements.txt
 
       - name: Serverless Deploy
         uses: serverless/github-action@v3.2
