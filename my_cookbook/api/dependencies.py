@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from my_cookbook import crud, models, schemas
 from my_cookbook.config import get_settings
-from my_cookbook.db.session import SessionLocal
+from my_cookbook.db.session import local_session
 
 settings = get_settings()
 
@@ -16,7 +16,7 @@ reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/")
 
 def get_db() -> Generator:
     try:
-        db = SessionLocal()
+        db = local_session
         yield db
     finally:
         db.close()

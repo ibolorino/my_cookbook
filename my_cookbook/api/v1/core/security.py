@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any, Union
 
+from fastapi import HTTPException
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -30,5 +31,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password: str) -> str:
+def get_password_hash(password: str, confirm_password: str) -> str:
+    if password != confirm_password:
+        raise HTTPException(status_code=400, detail="Passwords does not match")
     return pwd_context.hash(password)
